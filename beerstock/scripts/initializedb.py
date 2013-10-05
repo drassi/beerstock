@@ -11,7 +11,8 @@ from pyramid.paster import (
 
 from ..models import (
     DBSession,
-    MyModel,
+    Item,
+    ItemType,
     Base,
     )
 
@@ -33,5 +34,9 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = MyModel(name='one', value=1)
-        DBSession.add(model)
+        ipa = ItemType('1-2', 'IPA Zythos')
+        bitter = ItemType('2-1', 'Bitter English')
+        brown = ItemType('3-1', 'Brown SSD')
+        dubbel = ItemType('4-1', 'Dubbel Belgian Ale')
+        DBSession.add_all([ipa, bitter, brown, dubbel])
+        DBSession.add_all([Item('1', ipa), Item('2', ipa), Item('3', bitter), Item('4', brown), Item('5', dubbel)])
