@@ -1,0 +1,4 @@
+beerstock.egg-info
+beerstock.sqlite
+*.pyc
+*.swp
