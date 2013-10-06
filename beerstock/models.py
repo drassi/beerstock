@@ -27,7 +27,7 @@ class ItemType(Base):
     __tablename__ = 'item_type'
 
     id = Column(Integer, primary_key=True)
-    name = Column(Text, nullable=False)
+    name = Column(Text, unique=True, nullable=False)
     description = Column(Text, nullable=False)
     added = Column(DateTime, nullable=False)
 
@@ -40,13 +40,14 @@ class Item(Base):
 
     __tablename__ = 'item'
 
-    id = Column(Text, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    barcode = Column(Text, unique=True, nullable=False)
     item_type_id = Column(Integer, ForeignKey('item_type.id'), nullable=False)
     added = Column(DateTime, nullable=False)
 
     item_type = relationship(ItemType, backref='items')
 
-    def __init__(self, id, item_type):
-        self.id = id
+    def __init__(self, barcode, item_type):
+        self.barcode = barcode
         self.item_type = item_type
         self.added = datetime.utcnow()

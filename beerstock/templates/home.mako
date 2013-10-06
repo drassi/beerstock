@@ -1,12 +1,5 @@
 <%inherit file="base.mako"/>
-
-<%block name="header">
-  <h1>Home</h1>
-</%block>
-
-<p>
-  <a id="scan" data-role="button" href="#">Info</a>
-  <a id="scan" data-role="button" href="#">Check-out</a>
+  <a data-role="button" href="${request.route_path('new-item-type')}">New item type</a>
 </p>
 
 <p>
