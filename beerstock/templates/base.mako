@@ -19,9 +19,9 @@
         <div data-role="navbar">
           <ul>
             <li><a href="${request.route_path('home')}">Home</a></li>
-            <li><a href="">Scan</a></li>
-            <li><a href="">Checkout</a></li>
-            <li><a href="">Bulk checkout</a></li>
+            <li><a href="${h.barcode_scan_url(request.host_url + request.route_path('scan'))}">Scan</a></li>
+            <li><a href="${h.barcode_scan_url(request.host_url + request.route_path('check-out'))}">Checkout</a></li>
+            <li><a href="${h.barcode_scan_url(request.host_url + request.route_path('check-out'), {'bulk':'true'})}">Bulk checkout</a></li>
           </ul>
         </div>
       </div>

@@ -6,7 +6,7 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import DBSession, ItemType, Item
 
-import pretty
+from beerstock import helpers
 
 @view_config(route_name='home', renderer='home.mako')
 def home(request):
@@ -18,7 +18,7 @@ def item_type(request):
     item_type_id = request.matchdict['item_type_id']
     item_type = DBSession.query(ItemType).get(item_type_id)
     items = sorted(item_type.items, key=lambda item: item.added, reverse=True)
-    return {'item_type' : item_type, 'items' : items, 'pretty' : pretty}
+    return {'item_type' : item_type, 'items' : items}
 
 @view_config(route_name='new-item-type', renderer='new-item-type.mako')
 def new_item_type(request):
@@ -45,10 +45,35 @@ def check_in(request):
     else:
         return HTTPSeeOther(location=request.route_url('item-type', item_type_id=item_type_id))
 
-@view_config(route_name='check-out')
-def check_out(request):
+@view_config(route_name='check-out-item')
+def check_out_item(request):
     item_id = request.matchdict['item_id']
     item = DBSession.query(Item).get(item_id)
     DBSession.delete(item)
     return HTTPSeeOther(location=request.route_url('home'))
 
+@view_config(route_name='check-out', renderer='check-out.mako')
+def check_out(request):
+    barcode = request.params['barcode']
+    bulk = 'bulk' in request.params
+    item = DBSession.query(Item).filter(Item.barcode==barcode).one()
+    DBSession.delete(item)
+    if bulk:
+        return HTTPSeeOther(location=helpers.barcode_scan_url(request.host_url + request.route_path('check-out'), {'bulk':'true'}))
+    else:
+        return HTTPSeeOther(location=request.route_url('home'))
+
+@view_config(route_name='scan', renderer='scan.mako')
+def scan(request):
+    barcode = request.params['barcode']
+    item = DBSession.query(Item).filter(Item.barcode==barcode).one()
+    return {'item' : item}
+
+@view_config(route_name='delete-item-type')
+def delete_item_type(request):
+    item_type_id = request.matchdict['item_type_id']
+    item_type = DBSession.query(ItemType).get(item_type_id)
+    if len(item_type.items) > 0:
+        raise Exception('must be empty')
+    DBSession.delete(item_type)
+    return HTTPSeeOther(location=request.route_url('home'))
