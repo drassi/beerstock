@@ -29,6 +29,7 @@ def main(global_config, **settings):
     config.add_route('check-out', '/check-out/barcode')
     config.add_route('scan', '/scan')
     config.add_route('delete-item-type', '/delete-type/{item_type_id}')
+    config.add_route('rate-beer-scan', '/ratebeer')
     config.add_subscriber(add_renderer_globals, BeforeRender)
     config.scan()
     return config.make_wsgi_app()

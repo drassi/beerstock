@@ -77,3 +77,7 @@ def delete_item_type(request):
         raise Exception('must be empty')
     DBSession.delete(item_type)
     return HTTPSeeOther(location=request.route_url('home'))
+
+@view_config(route_name='rate-beer-scan')
+def rate_beer_scan(request):
+    return HTTPSeeOther(location='zxing://scan/?ret=http%3A%2F%2Fwww.ratebeer.com%2Fjson%2Fw_upc.asp%3Fupc%3D%7BCODE%7D')
